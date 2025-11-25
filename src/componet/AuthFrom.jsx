@@ -1,5 +1,4 @@
 
-
 import { useState } from "react";
 
 export default function AuthForm({ onAuth, onBack }) {
@@ -20,6 +19,17 @@ export default function AuthForm({ onAuth, onBack }) {
       const data = await res.json();
 
       if (data.success) {
+        // Save user data  localStorage
+        localStorage.setItem('authToken', data.token || data.user.token);
+        localStorage.setItem('userData', JSON.stringify(data.user));
+        localStorage.setItem('userRole', data.user.role || 'user');
+        localStorage.setItem('isAuthenticated', 'true');
+
+        // Also set a timestamp for session management
+        localStorage.setItem('loginTime', new Date().toISOString());
+
+        console.log("User data saved to localStorage:", data.user);
+        
         onAuth(data.user);
       } else {
         setError(data.message || "Authentication failed");
@@ -36,9 +46,13 @@ export default function AuthForm({ onAuth, onBack }) {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        background: "#f0f2f5",
+        background: "#7678d3ff",
         fontFamily: "Arial",
         position: "relative",
+      margin:"0% 15% 0% 15%",
+      padding:"0% 15% 0% 15%",
+         borderRadius: "10px",
+    
       }}
     >
       {/* 🔙 BACK BUTTON */}
@@ -62,15 +76,16 @@ export default function AuthForm({ onAuth, onBack }) {
 
       <div
         style={{
-          width: "350px",
-          padding: "30px",
+          width: "100%",
+          height:"400px",
+         padding:"2px 40px 0px 10px",
           background: "#fff",
-          borderRadius: "12px",
+          borderRadius: "14px",
           boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
         }}
       >
         <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
-          Login / Register
+          Login 
         </h2>
 
         <form onSubmit={handleSubmit}>
@@ -81,8 +96,8 @@ export default function AuthForm({ onAuth, onBack }) {
             onChange={(e) => setName(e.target.value)}
             style={{
               width: "100%",
-              padding: "10px",
-              marginBottom: "15px",
+              padding: "14px",
+              marginBottom: "30px",
               borderRadius: "6px",
               border: "1px solid #ccc",
             }}
@@ -96,8 +111,8 @@ export default function AuthForm({ onAuth, onBack }) {
             onChange={(e) => setEmail(e.target.value)}
             style={{
               width: "100%",
-              padding: "10px",
-              marginBottom: "15px",
+              padding: "14px",
+             marginBottom: "30px",
               borderRadius: "6px",
               border: "1px solid #ccc",
             }}
@@ -111,8 +126,8 @@ export default function AuthForm({ onAuth, onBack }) {
             onChange={(e) => setPassword(e.target.value)}
             style={{
               width: "100%",
-              padding: "10px",
-              marginBottom: "20px",
+              padding: "13px",
+            marginBottom: "30px",
               borderRadius: "6px",
               border: "1px solid #ccc",
             }}
@@ -122,7 +137,8 @@ export default function AuthForm({ onAuth, onBack }) {
             type="submit"
             style={{
               width: "100%",
-              padding: "12px",
+              padding: "14px",
+        
               borderRadius: "6px",
               backgroundColor: "#4CAF50",
               color: "#fff",
